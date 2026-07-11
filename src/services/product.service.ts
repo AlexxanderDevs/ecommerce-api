@@ -356,3 +356,39 @@ export async function activateCategory(
 
   return rows[0].data;
 }
+
+export async function getProductImagesSeller(
+  idUsuario: string,
+  idProducto: string
+) {
+  const { rows } = await pool.query(
+    'SELECT catalogo.fn_imagenes_producto_vendedor_api($1, $2) AS data',
+    [idUsuario, idProducto]
+  );
+
+  return rows[0].data;
+}
+
+export async function setMainProductImage(
+  idUsuario: string,
+  idImagen: string
+) {
+  const { rows } = await pool.query(
+    'SELECT catalogo.fn_marcar_imagen_principal_producto_api($1, $2) AS data',
+    [idUsuario, idImagen]
+  );
+
+  return rows[0].data;
+}
+
+export async function deactivateProductImage(
+  idUsuario: string,
+  idImagen: string
+) {
+  const { rows } = await pool.query(
+    'SELECT catalogo.fn_desactivar_imagen_producto_api($1, $2) AS data',
+    [idUsuario, idImagen]
+  );
+
+  return rows[0].data;
+}

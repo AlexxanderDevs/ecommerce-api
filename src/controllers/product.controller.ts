@@ -3,6 +3,9 @@ import { AuthenticatedRequest } from '../middlewares/auth.middleware';
 import { AppError } from '../middlewares/error.middleware';
 import {
   addProductImage,
+  getProductImagesSeller,
+  setMainProductImage,
+  deactivateProductImage,
   addProductVariant,
   createCategory,
   updateCategory,
@@ -471,6 +474,87 @@ export async function activateCategoryController(
       ok: true,
       message: 'Categoría reactivada correctamente.',
       category
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+// CONTROLADOR DE IMAGES OPOR PRODUCTOS
+export async function getProductImagesSellerController(
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction
+): Promise<void> {
+  try {
+    if (!req.user) {
+      throw new AppError('Usuario no autenticado.', 401);
+    }
+
+    const productId = getParamAsString(req, 'id');
+
+    const images = await getProductImagesSeller(
+      req.user.id_usuario,
+      productId
+    );
+
+    res.json({
+      ok: true,
+      images
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function setMainProductImageController(
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction
+): Promise<void> {
+  try {
+    if (!req.user) {
+      throw new AppError('Usuario no autenticado.', 401);
+    }
+
+    const imageId = getParamAsString(req, 'id');
+
+    const image = await setMainProductImage(
+      req.user.id_usuario,
+      imageId
+    );
+
+    res.json({
+      ok: true,
+      message: 'Imagen principal actualizada correctamente.',
+      image
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function deactivateProductImageController(
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction
+): Promise<void> {
+  try {
+    if (!req.user) {
+      throw new AppError('Usuario no autenticado.', 401);
+    }
+
+    const imageId = getParamAsString(req, 'id');
+
+    const image = await deactivateProductImage(
+      req.user.id_usuario,
+      imageId
+    );
+
+    res.json({
+      ok: true,
+      message: 'Imagen desactivada correctamente.',
+      image
     });
   } catch (error) {
     next(error);

@@ -1,6 +1,9 @@
 import { Router } from 'express';
 import {
   addProductImageController,
+  getProductImagesSellerController,
+  setMainProductImageController,
+  deactivateProductImageController,
   addProductVariantController,
   activateProductController,
   createCategoryController,
@@ -174,6 +177,28 @@ router.patch(
   authMiddleware,
   roleMiddleware('VENDEDOR'),
   activateProductVariantController
+);
+
+// Product Images
+router.get(
+  '/seller/products/:id/images',
+  authMiddleware,
+  roleMiddleware('VENDEDOR'),
+  getProductImagesSellerController
+);
+
+router.patch(
+  '/seller/images/:id/main',
+  authMiddleware,
+  roleMiddleware('VENDEDOR'),
+  setMainProductImageController
+);
+
+router.patch(
+  '/seller/images/:id/deactivate',
+  authMiddleware,
+  roleMiddleware('VENDEDOR'),
+  deactivateProductImageController
 );
 
 export default router;
