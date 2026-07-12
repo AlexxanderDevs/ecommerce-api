@@ -20,7 +20,8 @@ import {
   getProductVariantsSellerController,
   updateProductVariantController,
   deactivateProductVariantController,
-  activateProductVariantController
+  activateProductVariantController,
+  getPublicCategoriesByStoreSlugController
 } from '../controllers/product.controller';
 import { authMiddleware } from '../middlewares/auth.middleware';
 import { roleMiddleware } from '../middlewares/role.middleware';
@@ -47,6 +48,11 @@ router.get(
   '/public/stores/:slug/products',
   validate(storeSlugParamSchema),
   getPublicProductsByStoreSlugController
+);
+
+router.get(
+  '/public/stores/:slug/categories',
+  getPublicCategoriesByStoreSlugController
 );
 
 router.get(
@@ -200,5 +206,7 @@ router.patch(
   roleMiddleware('VENDEDOR'),
   deactivateProductImageController
 );
+
+
 
 export default router;

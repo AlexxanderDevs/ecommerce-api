@@ -22,7 +22,8 @@ import {
   getProductVariantsSeller,
   updateProductVariant,
   deactivateProductVariant,
-  activateProductVariant
+  activateProductVariant,
+  getPublicCategoriesByStoreSlug
 } from '../services/product.service';
 
 function getParamAsString(req: Request, paramName: string): string {
@@ -555,6 +556,24 @@ export async function deactivateProductImageController(
       ok: true,
       message: 'Imagen desactivada correctamente.',
       image
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+export async function getPublicCategoriesByStoreSlugController(
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> {
+  try {
+    const slug = getParamAsString(req, 'slug');
+
+    const categories = await getPublicCategoriesByStoreSlug(slug);
+
+    res.json({
+      ok: true,
+      categories
     });
   } catch (error) {
     next(error);

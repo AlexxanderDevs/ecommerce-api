@@ -392,3 +392,12 @@ export async function deactivateProductImage(
 
   return rows[0].data;
 }
+
+export async function getPublicCategoriesByStoreSlug(slug: string) {
+  const { rows } = await pool.query(
+    'SELECT catalogo.fn_categorias_publicas_tienda_api($1) AS data',
+    [slug]
+  );
+
+  return rows[0].data;
+}
