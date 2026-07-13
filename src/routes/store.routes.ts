@@ -8,7 +8,11 @@ import {
   getPublicStoresController,
   markNotificationAsReadController,
   rejectStoreController,
-  getAdminDashboardController
+  getAdminDashboardController,
+  getAdminStoresController,
+  reactivateStoreAdminController,
+  suspendStoreAdminController,
+  updateSellerStoreController
 } from '../controllers/store.controller';
 import { authMiddleware } from '../middlewares/auth.middleware';
 import { roleMiddleware } from '../middlewares/role.middleware';
@@ -49,6 +53,12 @@ router.get(
   roleMiddleware('VENDEDOR'),
   getMyStoresController
 );
+router.patch(
+  '/seller/:id',
+  authMiddleware,
+  roleMiddleware('VENDEDOR'),
+  updateSellerStoreController
+);
 
 /*
 |--------------------------------------------------------------------------
@@ -68,6 +78,27 @@ router.get(
   authMiddleware,
   roleMiddleware('ADMIN'),
   getAdminDashboardController
+);
+
+router.get(
+  '/admin/all',
+  authMiddleware,
+  roleMiddleware('ADMIN'),
+  getAdminStoresController
+);
+
+router.patch(
+  '/admin/:id/suspend',
+  authMiddleware,
+  roleMiddleware('ADMIN'),
+  suspendStoreAdminController
+);
+
+router.patch(
+  '/admin/:id/reactivate',
+  authMiddleware,
+  roleMiddleware('ADMIN'),
+  reactivateStoreAdminController
 );
 
 
@@ -101,6 +132,5 @@ router.patch(
   validate(notificationIdParamSchema),
   markNotificationAsReadController
 );
-
 
 export default router;

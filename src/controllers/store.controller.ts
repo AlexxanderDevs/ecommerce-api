@@ -9,7 +9,11 @@ import {
   getPublicStores,
   markNotificationAsRead,
   rejectStore,
-  getAdminDashboard
+  getAdminDashboard,
+  getAdminStores,
+  reactivateStoreAdmin,
+  suspendStoreAdmin,
+  updateSellerStore
 } from '../services/store.service';
 import { AppError } from '../middlewares/error.middleware';
 
@@ -220,6 +224,112 @@ export async function getAdminDashboardController(
     res.json({
       ok: true,
       dashboard
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function getAdminStoresController(
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction
+): Promise<void> {
+  try {
+    if (!req.user) {
+      throw new AppError('Usuario no autenticado.', 401);
+    }
+
+    const stores = await getAdminStores(req.user.id_usuario);
+
+    res.json({
+      ok: true,
+      stores
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function suspendStoreAdminController(
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction
+): Promise<void> {
+  try {
+    if (!req.user) {
+      throw new AppError('Usuario no autenticado.', 401);
+    }
+
+    const storeId = getParamAsString(req, 'id');
+
+    const store = await suspendStoreAdmin(
+      storeId,
+      req.user.id_usuario,
+      req.body?.observacion
+    );
+
+    res.json({
+      ok: true,
+      message: 'Tienda suspendida correctamente.',
+      store
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+//ADMIN REACTIVATE STORE CONTROLLER
+export async function reactivateStoreAdminController(
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction
+): Promise<void> {
+  try {
+    if (!req.user) {
+      throw new AppError('Usuario no autenticado.', 401);
+    }
+
+    const storeId = getParamAsString(req, 'id');
+
+    const store = await reactivateStoreAdmin(
+      storeId,
+      req.user.id_usuario,
+      req.body?.observacion
+    );
+
+    res.json({
+      ok: true,
+      message: 'Tienda reactivada correctamente.',
+      store
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+//ACTUALZIART TIENDA DEL VENDEDOR
+export async function updateSellerStoreController(
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction
+): Promise<void> {
+  try {
+    if (!req.user) {
+      throw new AppError('Usuario no autenticado.', 401);
+    }
+
+    const storeId = getParamAsString(req, 'id');
+
+    const store = await updateSellerStore(
+      req.user.id_usuario,
+      storeId,
+      req.body
+    );
+
+    res.json({
+      ok: true,
+      message: 'Tienda actualizada correctamente.',
+      store
     });
   } catch (error) {
     next(error);
