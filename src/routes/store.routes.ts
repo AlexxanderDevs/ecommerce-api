@@ -7,7 +7,8 @@ import {
   getPendingStoresController,
   getPublicStoresController,
   markNotificationAsReadController,
-  rejectStoreController
+  rejectStoreController,
+  getAdminDashboardController
 } from '../controllers/store.controller';
 import { authMiddleware } from '../middlewares/auth.middleware';
 import { roleMiddleware } from '../middlewares/role.middleware';
@@ -62,6 +63,14 @@ router.get(
   getPendingStoresController
 );
 
+router.get(
+  '/admin/dashboard',
+  authMiddleware,
+  roleMiddleware('ADMIN'),
+  getAdminDashboardController
+);
+
+
 router.post(
   '/admin/:id/approve',
   authMiddleware,
@@ -92,5 +101,6 @@ router.patch(
   validate(notificationIdParamSchema),
   markNotificationAsReadController
 );
+
 
 export default router;

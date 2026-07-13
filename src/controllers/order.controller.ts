@@ -7,6 +7,7 @@ import {
   createOrder,
   deliverOrder,
   getSellerOrderDetail,
+  getSellerDashboardByStore,
   getSellerOrdersByStore,
   markWhatsAppSent
 } from '../services/order.service';
@@ -189,6 +190,31 @@ export async function markWhatsAppSentController(
       ok: true,
       message: 'Pedido marcado como enviado por WhatsApp.',
       order
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+export async function getSellerDashboardByStoreController(
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction
+): Promise<void> {
+  try {
+    if (!req.user) {
+      throw new AppError('Usuario no autenticado.', 401);
+    }
+
+    const storeId = getParamAsString(req, 'storeId');
+
+    const dashboard = await getSellerDashboardByStore(
+      req.user.id_usuario,
+      storeId
+    );
+
+    res.json({
+      ok: true,
+      dashboard
     });
   } catch (error) {
     next(error);

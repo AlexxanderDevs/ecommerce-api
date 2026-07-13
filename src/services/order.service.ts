@@ -172,3 +172,17 @@ export async function markWhatsAppSent(idPedido: string) {
 
   return result.rows[0].data;
 }
+
+export async function getSellerDashboardByStore(
+  idUsuario: string,
+  idTienda: string
+) {
+  const result = await pool.query(
+    `
+    SELECT ventas.fn_dashboard_vendedor_tienda_api($1, $2) AS data
+    `,
+    [idUsuario, idTienda]
+  );
+
+  return result.rows[0].data;
+}

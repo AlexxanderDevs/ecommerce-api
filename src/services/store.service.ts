@@ -131,3 +131,17 @@ export async function getPublicStores() {
 
   return result.rows[0].data;
 }
+
+export async function getAdminDashboard(
+  idAdmin: string,
+  idTienda?: string | null
+) {
+  const result = await pool.query(
+    `
+    SELECT tienda.fn_dashboard_admin_api($1, $2) AS data
+    `,
+    [idAdmin, idTienda ?? null]
+  );
+
+  return result.rows[0].data;
+}

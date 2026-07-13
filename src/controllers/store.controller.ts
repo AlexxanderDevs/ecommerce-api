@@ -8,7 +8,8 @@ import {
   getPendingStores,
   getPublicStores,
   markNotificationAsRead,
-  rejectStore
+  rejectStore,
+  getAdminDashboard
 } from '../services/store.service';
 import { AppError } from '../middlewares/error.middleware';
 
@@ -189,6 +190,36 @@ export async function getPublicStoresController(
     res.json({
       ok: true,
       stores
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+// Admin dashboard controller
+export async function getAdminDashboardController(
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction
+): Promise<void> {
+  try {
+    if (!req.user) {
+      throw new AppError('Usuario no autenticado.', 401);
+    }
+
+    const rawStoreId = req.query.storeId;
+    const storeId =
+      typeof rawStoreId === 'string' && rawStoreId.trim().length > 0
+        ? rawStoreId
+        : null;
+
+    const dashboard = await getAdminDashboard(
+      req.user.id_usuario,
+      storeId
+    );
+
+    res.json({
+      ok: true,
+      dashboard
     });
   } catch (error) {
     next(error);
