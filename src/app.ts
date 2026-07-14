@@ -11,6 +11,7 @@ import uploadRoutes from './routes/upload.routes';
 import productRoutes from './routes/product.routes';
 import orderRoutes from './routes/order.routes';
 import invoiceRoutes from './routes/invoice.routes';
+import userRoutes from './routes/user.routes';
 
 import { env } from './config/env';
 import healthRoutes from './routes/health.routes';
@@ -69,6 +70,7 @@ app.use('/api/uploads', uploadRoutes);
 app.use('/api/catalog', productRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/invoices', invoiceRoutes);
+app.use('/api/users', userRoutes);
 
 app.use(notFoundHandler);
 app.use(errorHandler);
