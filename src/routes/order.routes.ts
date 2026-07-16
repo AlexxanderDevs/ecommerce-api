@@ -7,7 +7,9 @@ import {
   getSellerOrderDetailController,
   getSellerOrdersByStoreController,
   getSellerDashboardByStoreController,
-  markWhatsAppSentController
+  markWhatsAppSentController,
+  getCustomerOrderDetailController,
+  getCustomerOrdersController
 } from '../controllers/order.controller';
 
 import {
@@ -38,6 +40,20 @@ router.patch(
   '/:id/whatsapp-sent',
   validate(orderIdParamSchema),
   markWhatsAppSentController
+);
+
+router.get(
+  '/customer',
+  authMiddleware,
+  roleMiddleware('CLIENTE'),
+  getCustomerOrdersController
+);
+
+router.get(
+  '/customer/:id',
+  authMiddleware,
+  roleMiddleware('CLIENTE'),
+  getCustomerOrderDetailController
 );
 
 router.get(

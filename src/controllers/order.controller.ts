@@ -9,7 +9,9 @@ import {
   getSellerOrderDetail,
   getSellerDashboardByStore,
   getSellerOrdersByStore,
-  markWhatsAppSent
+  markWhatsAppSent,
+  getCustomerOrderDetail,
+  getCustomerOrders
 } from '../services/order.service';
 
 function getParamAsString(req: Request, paramName: string): string {
@@ -215,6 +217,53 @@ export async function getSellerDashboardByStoreController(
     res.json({
       ok: true,
       dashboard
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function getCustomerOrdersController(
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction
+): Promise<void> {
+  try {
+    if (!req.user) {
+      throw new AppError('Usuario no autenticado.', 401);
+    }
+
+    const orders = await getCustomerOrders(req.user.id_usuario);
+
+    res.json({
+      ok: true,
+      orders
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function getCustomerOrderDetailController(
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction
+): Promise<void> {
+  try {
+    if (!req.user) {
+      throw new AppError('Usuario no autenticado.', 401);
+    }
+
+    const orderId = getParamAsString(req, 'id');
+
+    const order = await getCustomerOrderDetail(
+      req.user.id_usuario,
+      orderId
+    );
+
+    res.json({
+      ok: true,
+      order
     });
   } catch (error) {
     next(error);

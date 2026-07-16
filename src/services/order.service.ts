@@ -186,3 +186,28 @@ export async function getSellerDashboardByStore(
 
   return result.rows[0].data;
 }
+
+export async function getCustomerOrders(idUsuario: string) {
+  const result = await pool.query(
+    `
+    SELECT ventas.fn_pedidos_cliente_api($1) AS data
+    `,
+    [idUsuario]
+  );
+
+  return result.rows[0].data;
+}
+
+export async function getCustomerOrderDetail(
+  idUsuario: string,
+  idPedido: string
+) {
+  const result = await pool.query(
+    `
+    SELECT ventas.fn_detalle_pedido_cliente_api($1, $2) AS data
+    `,
+    [idUsuario, idPedido]
+  );
+
+  return result.rows[0].data;
+}
