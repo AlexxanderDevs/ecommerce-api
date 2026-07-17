@@ -9,7 +9,8 @@ import {
   getSellerDashboardByStoreController,
   markWhatsAppSentController,
   getCustomerOrderDetailController,
-  getCustomerOrdersController
+  getCustomerOrdersController,
+  trackPublicOrderController
 } from '../controllers/order.controller';
 
 import {
@@ -34,6 +35,10 @@ router.post(
   optionalAuthMiddleware,
   validate(createOrderSchema),
   createOrderController
+);
+router.post(
+  '/track',
+  trackPublicOrderController
 );
 
 router.patch(

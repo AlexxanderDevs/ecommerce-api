@@ -11,7 +11,8 @@ import {
   getSellerOrdersByStore,
   markWhatsAppSent,
   getCustomerOrderDetail,
-  getCustomerOrders
+  getCustomerOrders,
+  trackPublicOrder
 } from '../services/order.service';
 
 function getParamAsString(req: Request, paramName: string): string {
@@ -260,6 +261,33 @@ export async function getCustomerOrderDetailController(
       req.user.id_usuario,
       orderId
     );
+
+    res.json({
+      ok: true,
+      order
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function trackPublicOrderController(
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> {
+  try {
+    const { code, phone } = req.body;
+
+    if (!code || typeof code !== 'string') {
+      throw new AppError('Ingresa el número de pedido o factura.', 400);
+    }
+
+    if (!phone || typeof phone !== 'string') {
+      throw new AppError('Ingresa el teléfono usado en la compra.', 400);
+    }
+
+    const order = await trackPublicOrder(code, phone);
 
     res.json({
       ok: true,

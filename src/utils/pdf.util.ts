@@ -13,6 +13,8 @@ interface InvoiceData {
     etiqueta_url?: string;
   };
   pedido: {
+    id_pedido?: string;
+    codigo_seguimiento?: string | null;
     cliente_nombre: string;
     cliente_correo?: string;
     cliente_telefono?: string;
@@ -58,6 +60,14 @@ function formatDate(value: string): string {
 
 function getStoreName(data: InvoiceData): string {
   return data.tienda.nombre_comercial || data.tienda.nombre || 'Tienda';
+}
+
+function getTrackingCode(data: InvoiceData): string {
+  return (
+    data.pedido.codigo_seguimiento ||
+    data.pedido.id_pedido ||
+    'No registrado'
+  );
 }
 
 function safeFileName(value: string): string {
@@ -190,7 +200,7 @@ function drawInvoiceInfo(doc: PdfDoc, data: InvoiceData) {
     .text('Documento generado desde la tienda virtual.', 45, 182);
 
   doc
-    .roundedRect(345, 150, 205, 75, 14)
+    .roundedRect(345, 150, 205, 110, 14)
     .fillAndStroke('#ffffff', COLORS.border);
 
   doc
@@ -212,6 +222,19 @@ function drawInvoiceInfo(doc: PdfDoc, data: InvoiceData) {
     .fontSize(9)
     .fillColor(COLORS.muted)
     .text(formatDate(data.factura.fecha_emision), 360, 204, {
+      width: 175
+    });
+  doc
+    .font('Helvetica-Bold')
+    .fontSize(8.5)
+    .fillColor(COLORS.muted)
+    .text('CÓDIGO DE SEGUIMIENTO', 360, 225);
+
+  doc
+    .font('Helvetica-Bold')
+    .fontSize(11)
+    .fillColor(COLORS.primary)
+    .text(getTrackingCode(data), 360, 240, {
       width: 175
     });
 }
@@ -241,7 +264,7 @@ function drawLabelValue(
 }
 
 function drawClientBlocks(doc: PdfDoc, data: InvoiceData) {
-  const y = 250;
+  const y = 285;
 
   doc
     .roundedRect(45, y, 240, 120, 14)
@@ -516,7 +539,7 @@ export async function generateInvoicePdf(data: InvoiceData): Promise<{
   drawInvoiceInfo(doc, data);
   drawClientBlocks(doc, data);
 
-  const detailsEndY = drawDetailsTable(doc, data, 405, page);
+  const detailsEndY = drawDetailsTable(doc, data, 440, page);
   const totalsEndY = drawTotals(doc, data, detailsEndY + 10, page);
 
   if (totalsEndY < 735) {

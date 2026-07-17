@@ -211,3 +211,17 @@ export async function getCustomerOrderDetail(
 
   return result.rows[0].data;
 }
+
+export async function trackPublicOrder(
+  code: string,
+  phone: string
+) {
+  const result = await pool.query(
+    `
+    SELECT ventas.fn_consultar_pedido_publico_api($1, $2) AS data
+    `,
+    [code, phone]
+  );
+
+  return result.rows[0].data;
+}
